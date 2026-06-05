@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CampusCare - Smart Complaint Tracking System</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #14213d;
+      --muted: #5f6c7b;
+      --line: rgba(20, 33, 61, 0.12);
+      --sky: #0ea5e9;
+      --mint: #10b981;
+      --sun: #f59e0b;
+      --rose: #f43f5e;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 5%, rgba(14, 165, 233, 0.18), transparent 32rem),
+        radial-gradient(circle at 85% 12%, rgba(245, 158, 11, 0.18), transparent 30rem),
+        linear-gradient(180deg, #f8fbff 0%, #eef7f2 48%, #fffaf1 100%);
+      overflow-x: hidden;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.74);
+      border: 1px solid rgba(255, 255, 255, 0.82);
+      box-shadow: 0 24px 70px rgba(20, 33, 61, 0.12);
+      backdrop-filter: blur(18px);
+    }
+
+    .mesh {
+      background-image:
+        linear-gradient(rgba(20, 33, 61, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(20, 33, 61, 0.06) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    .lift {
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+
+    .lift:hover {
+      transform: translateY(-5px);
+      border-color: rgba(14, 165, 233, 0.35);
+      box-shadow: 0 24px 48px rgba(20, 33, 61, 0.12);
+    }
+
+    .pulse-dot {
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.55);
+      animation: pulse 1.9s infinite;
+    }
+
+    @keyframes pulse {
+      70% { box-shadow: 0 0 0 12px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .float-card {
+      animation: floatCard 5s ease-in-out infinite;
+    }
+
+    @keyframes floatCard {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .rail::before {
+      content: "";
+      position: absolute;
+      left: 1.1rem;
+      top: 2.8rem;
+      bottom: 2.8rem;
+      width: 2px;
+      background: linear-gradient(var(--sky), var(--mint), var(--sun));
+    }
+  </style>
+</head>
+
+<body>
+  <header class="sticky top-0 z-50 border-b border-white/70 bg-white/75 backdrop-blur-xl">
+    <nav class="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
+      <a href="#home" class="flex items-center gap-3" aria-label="CampusCare home">
+        <span class="grid h-11 w-11 place-items-center rounded-2xl bg-[#14213d] text-xl text-white shadow-lg shadow-slate-300">C</span>
+        <span>
+          <span class="block text-xl font-black tracking-tight">CampusCare</span>
+          <span class="block text-xs font-semibold uppercase text-slate-500">Smart issue desk</span>
+        </span>
+      </a>
+
+      <ul class="hidden items-center gap-7 text-sm font-bold text-slate-600 md:flex">
+        <li><a href="#features" class="hover:text-sky-600">Features</a></li>
+        <li><a href="#how" class="hover:text-sky-600">Workflow</a></li>
+        <li><a href="#categories" class="hover:text-sky-600">Categories</a></li>
+        <li><a href="#contact" class="hover:text-sky-600">Contact</a></li>
+      </ul>
+
+      <a href="#demo" class="rounded-full bg-[#14213d] px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-slate-300 transition hover:bg-slate-800">
+        Open Portal
+      </a>
+    </nav>
+  </header>
+
+  <main id="home">
+    <section class="mesh relative">
+      <div class="mx-auto grid min-h-[calc(100vh-76px)] max-w-7xl items-center gap-12 px-5 py-14 lg:grid-cols-[1fr_0.92fr] lg:py-16">
+        <div>
+          <div class="mb-6 inline-flex items-center gap-3 rounded-full border border-white bg-white/75 px-4 py-2 text-sm font-bold text-slate-600 shadow-sm">
+            <span class="pulse-dot h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+            Full Stack Development - Excercise 1
+          </div>
+
+          <h1 class="max-w-4xl text-5xl font-black leading-[1.02] tracking-normal text-[#14213d] sm:text-6xl lg:text-7xl">
+            Campus problems,
+            <span class="relative inline-block">
+              <span class="relative z-10">solved with clarity.</span>
+              <span class="absolute bottom-1 left-1 h-3 w-[92%] rounded-full bg-amber-300/70"></span>
+            </span>
+          </h1>
+
+          <p class="mt-7 max-w-2xl text-lg leading-8 text-slate-600">
+            CampusCare turns complaints into trackable service tickets with priority, location, department ownership, live status, and student feedback in one clean portal.
+          </p>
+
+          <div class="mt-9 flex flex-col gap-4 sm:flex-row">
+            <a href="#demo" class="inline-flex items-center justify-center rounded-2xl bg-sky-500 px-7 py-4 font-black text-white shadow-xl shadow-sky-200 transition hover:bg-sky-600">
+              Raise Complaint
+            </a>
+            <a href="#how" class="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white/80 px-7 py-4 font-black text-[#14213d] shadow-sm transition hover:border-sky-300">
+              See Workflow
+            </a>
+          </div>
+        </div>
+
+        <div id="demo" class="glass float-card w-full max-w-xl justify-self-center rounded-[2rem] p-4 sm:p-6 lg:justify-self-end">
+          <div class="rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-inner">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div>
+                <p class="text-xs font-black uppercase text-sky-600">Complain Management</p>
+                <h2 class="text-2xl font-black">Christ Campus Help Desk</h2>
+              </div>
+              <div class="flex gap-1.5">
+                <span class="h-3 w-3 rounded-full bg-rose-400"></span>
+                <span class="h-3 w-3 rounded-full bg-amber-400"></span>
+                <span class="h-3 w-3 rounded-full bg-emerald-400"></span>
+              </div>
+            </div>
+
+            <div class="relative mt-5 overflow-hidden rounded-3xl">
+              <img
+                src="assets/christ_gate.jpg"
+                alt="Christ University campus entrance"
+                class="h-56 w-full object-cover"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-[#14213d]/85 via-[#14213d]/20 to-transparent"></div>
+              <div class="absolute bottom-4 left-4 right-4">
+                <p class="text-xs font-black uppercase text-sky-100">Personalized for</p>
+                <p class="text-2xl font-black text-white">Christ University</p>
+              </div>
+            </div>
+
+            <div class="mt-5 rounded-3xl bg-[#14213d] p-5 text-white">
+              <p class="text-xs font-black uppercase text-sky-200">Simple ticket flow</p>
+              <div class="mt-4 grid gap-3">
+                <div class="flex items-center gap-3 rounded-2xl bg-white/10 p-3">
+                  <span class="grid h-9 w-9 place-items-center rounded-xl bg-sky-400 font-black">1</span>
+                  <div>
+                    <p class="font-black">Student raises complaint</p>
+                    <p class="text-sm text-slate-300">Category, place, and problem details.</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 rounded-2xl bg-white/10 p-3">
+                  <span class="grid h-9 w-9 place-items-center rounded-xl bg-emerald-400 font-black">2</span>
+                  <div>
+                    <p class="font-black">Admin assigns department</p>
+                    <p class="text-sm text-slate-300">Maintenance, IT, library, canteen, or transport.</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 rounded-2xl bg-white/10 p-3">
+                  <span class="grid h-9 w-9 place-items-center rounded-xl bg-amber-400 font-black text-[#14213d]">3</span>
+                  <div>
+                    <p class="font-black">Student tracks status</p>
+                    <p class="text-sm text-slate-300">Pending, in progress, resolved, and feedback.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="py-20">
+      <div class="mx-auto max-w-7xl px-5">
+        <div class="mb-10 max-w-2xl">
+          <p class="text-sm font-black uppercase text-sky-600">What makes it different</p>
+          <h2 class="mt-2 text-4xl font-black tracking-normal">A complaint system that feels alive, not like a form dump.</h2>
+        </div>
+
+        <div class="grid gap-5 md:grid-cols-3">
+          <article class="lift rounded-3xl border border-white bg-white/80 p-7">
+            <span class="grid h-14 w-14 place-items-center rounded-2xl bg-sky-100 text-xl font-black text-sky-700">01</span>
+            <h3 class="mt-6 text-2xl font-black">Smart intake</h3>
+            <p class="mt-3 leading-7 text-slate-600">Students submit category, location, priority, description, and proof so the right team gets clear context from the start.</p>
+          </article>
+
+          <article class="lift rounded-3xl border border-white bg-white/80 p-7">
+            <span class="grid h-14 w-14 place-items-center rounded-2xl bg-emerald-100 text-xl font-black text-emerald-700">02</span>
+            <h3 class="mt-6 text-2xl font-black">Status timeline</h3>
+            <p class="mt-3 leading-7 text-slate-600">Every complaint moves through Pending, Assigned, In Progress, Resolved, and Feedback with visible ownership.</p>
+          </article>
+
+          <article class="lift rounded-3xl border border-white bg-white/80 p-7">
+            <span class="grid h-14 w-14 place-items-center rounded-2xl bg-amber-100 text-xl font-black text-amber-700">03</span>
+            <h3 class="mt-6 text-2xl font-black">Feedback loop</h3>
+            <p class="mt-3 leading-7 text-slate-600">After resolution, students rate the response so departments can measure quality, not just ticket closure.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="how" class="bg-white/70 py-20">
+      <div class="mx-auto grid max-w-7xl gap-10 px-5 lg:grid-cols-[0.75fr_1fr]">
+        <div>
+          <p class="text-sm font-black uppercase text-emerald-600">Workflow</p>
+          <h2 class="mt-2 text-4xl font-black tracking-normal">From complaint to resolution in four visible steps.</h2>
+          <p class="mt-5 leading-8 text-slate-600">The interface is designed for students, admins, and service teams to know exactly what happened, who owns it, and what comes next.</p>
+        </div>
+
+        <div class="rail relative grid gap-4">
+          <div class="relative rounded-3xl border border-slate-100 bg-white p-5 pl-16 shadow-sm">
+            <span class="absolute left-3 top-5 grid h-8 w-8 place-items-center rounded-full bg-sky-500 text-sm font-black text-white">1</span>
+            <h3 class="font-black">Register and verify student profile</h3>
+            <p class="mt-1 text-sm text-slate-600">Keeps complaints authentic and linked to a reachable campus user.</p>
+          </div>
+          <div class="relative rounded-3xl border border-slate-100 bg-white p-5 pl-16 shadow-sm">
+            <span class="absolute left-3 top-5 grid h-8 w-8 place-items-center rounded-full bg-emerald-500 text-sm font-black text-white">2</span>
+            <h3 class="font-black">Raise an issue with exact location</h3>
+            <p class="mt-1 text-sm text-slate-600">Teams can filter by block, room, category, and urgency.</p>
+          </div>
+          <div class="relative rounded-3xl border border-slate-100 bg-white p-5 pl-16 shadow-sm">
+            <span class="absolute left-3 top-5 grid h-8 w-8 place-items-center rounded-full bg-amber-500 text-sm font-black text-white">3</span>
+            <h3 class="font-black">Track progress on the ticket board</h3>
+            <p class="mt-1 text-sm text-slate-600">No repeated calls or confusion about whether the complaint was seen.</p>
+          </div>
+          <div class="relative rounded-3xl border border-slate-100 bg-white p-5 pl-16 shadow-sm">
+            <span class="absolute left-3 top-5 grid h-8 w-8 place-items-center rounded-full bg-rose-500 text-sm font-black text-white">4</span>
+            <h3 class="font-black">Close with rating and feedback</h3>
+            <p class="mt-1 text-sm text-slate-600">Resolution quality becomes visible and measurable.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="categories" class="py-20">
+      <div class="mx-auto max-w-7xl px-5">
+        <div class="mb-10 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+          <div>
+            <p class="text-sm font-black uppercase text-amber-600">Complaint zones</p>
+            <h2 class="mt-2 text-4xl font-black tracking-normal">Campus coverage at a glance.</h2>
+          </div>
+          <p class="max-w-xl leading-7 text-slate-600">Color-coded categories make the system easier to scan and more memorable during a presentation or demo.</p>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="lift rounded-3xl bg-[#14213d] p-6 text-white">
+            <p class="text-4xl font-black">Cl</p>
+            <h3 class="mt-8 text-xl font-black">Classroom</h3>
+            <p class="mt-2 text-sm text-slate-300">Furniture, lights, fans, boards, projectors.</p>
+          </div>
+          <div class="lift rounded-3xl bg-sky-500 p-6 text-white">
+            <p class="text-4xl font-black">La</p>
+            <h3 class="mt-8 text-xl font-black">Laboratory</h3>
+            <p class="mt-2 text-sm text-sky-50">Equipment, systems, power, safety.</p>
+          </div>
+          <div class="lift rounded-3xl bg-emerald-500 p-6 text-white">
+            <p class="text-4xl font-black">Wi</p>
+            <h3 class="mt-8 text-xl font-black">Wi-Fi</h3>
+            <p class="mt-2 text-sm text-emerald-50">Connectivity, login, speed, coverage.</p>
+          </div>
+          <div class="lift rounded-3xl bg-amber-400 p-6 text-[#14213d]">
+            <p class="text-4xl font-black">Tr</p>
+            <h3 class="mt-8 text-xl font-black">Transport</h3>
+            <p class="mt-2 text-sm text-slate-700">Routes, timing, stops, vehicle issues.</p>
+          </div>
+          <div class="lift rounded-3xl bg-white p-6">
+            <p class="text-4xl font-black text-rose-500">Li</p>
+            <h3 class="mt-8 text-xl font-black">Library</h3>
+            <p class="mt-2 text-sm text-slate-600">Books, systems, seating, silence zones.</p>
+          </div>
+          <div class="lift rounded-3xl bg-white p-6">
+            <p class="text-4xl font-black text-sky-500">Ca</p>
+            <h3 class="mt-8 text-xl font-black">Canteen</h3>
+            <p class="mt-2 text-sm text-slate-600">Cleanliness, food quality, billing.</p>
+          </div>
+          <div class="lift rounded-3xl bg-white p-6">
+            <p class="text-4xl font-black text-emerald-500">Mt</p>
+            <h3 class="mt-8 text-xl font-black">Maintenance</h3>
+            <p class="mt-2 text-sm text-slate-600">Water, electricity, repairs, cleaning.</p>
+          </div>
+          <div class="lift rounded-3xl border-2 border-dashed border-slate-300 bg-white/60 p-6">
+            <p class="text-4xl font-black text-slate-500">+</p>
+            <h3 class="mt-8 text-xl font-black">Custom</h3>
+            <p class="mt-2 text-sm text-slate-600">Admins can add categories as campus needs grow.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contact" class="bg-[#14213d] py-10 text-white">
+    <div class="mx-auto flex max-w-7xl flex-col justify-between gap-6 px-5 md:flex-row md:items-center">
+      <div>
+        <h2 class="text-2xl font-black">CampusCare</h2>
+        <p class="mt-2 text-slate-300">Smart Complaint Tracking System for Educational Institutions</p>
+        <p class="mt-2 text-slate-300">Contact: 9095049917 - VARSHINI R B</p>
+      </div>
+      <div class="text-sm font-bold text-slate-300">
+        © 2026 CampusCare. Built for faster campus support.
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
