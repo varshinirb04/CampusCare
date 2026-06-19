@@ -240,6 +240,7 @@
     </section>
   </main>
 
+  <!-- Login modal shown before opening the complaint portal -->
   <div id="portalLoginModal" class="fixed inset-0 z-[60] hidden items-center justify-center bg-[#14213d]/60 px-5 backdrop-blur-sm">
     <div class="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
       <div class="flex items-start justify-between gap-4">
@@ -263,6 +264,26 @@
         class="mt-5 w-full rounded-xl bg-sky-500 px-5 py-3 font-black text-white hover:bg-sky-600">
         Continue
       </button>
+
+      <div class="mt-6 border-t border-slate-200 pt-5">
+      <p class="text-sm font-bold text-slate-600">Admin Login</p>
+
+      <input id="adminEmail" type="email" placeholder="Admin email"
+        class="mt-3 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400" />
+
+      <input id="adminPassword" type="password" placeholder="Admin password"
+        class="mt-3 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400" />
+
+      <button type="button" onclick="adminLogin()"
+        class="mt-4 w-full rounded-xl bg-[#14213d] px-5 py-3 font-black text-white hover:bg-slate-800">
+        Login as Admin
+      </button>
+
+      <p class="mt-2 text-xs text-slate-500">
+        Demo: admin@campuscare.com / admin123
+      </p>
+    </div>
+
     </div>
   </div>
 
@@ -280,6 +301,7 @@
   </footer>
 
   <script>
+    // Opens the modal and fills saved details if the user has logged in before.
     function openPortalLogin() {
       const modal = document.getElementById("portalLoginModal");
       const savedName = localStorage.getItem("studentName");
@@ -291,12 +313,14 @@
       modal.classList.add("flex");
     }
 
+    // Hides the login modal without changing saved user details.
     function closePortalLogin() {
       const modal = document.getElementById("portalLoginModal");
       modal.classList.add("hidden");
       modal.classList.remove("flex");
     }
 
+    // Saves user details with Local Storage before redirecting to the portal.
     function continueToPortal() {
       const name = document.getElementById("portalLoginName").value.trim();
       const email = document.getElementById("portalLoginEmail").value.trim();
@@ -308,8 +332,21 @@
 
       localStorage.setItem("studentName", name);
       localStorage.setItem("studentEmail", email);
-      window.location.href = "portal.html";
+      localStorage.setItem("activeRole", "student");
+      window.location.href = "student.html";
     }
+
+  function adminLogin() {
+    const email = document.getElementById("adminEmail").value.trim();
+    const password = document.getElementById("adminPassword").value.trim();
+
+    if (email === "admin@campuscare.com" && password === "admin123") {
+      localStorage.setItem("activeRole", "admin");
+      window.location.href = "admin.html";
+    } else {
+      alert("Invalid admin email or password.");
+    }
+ }
   </script>
 
 </body>
