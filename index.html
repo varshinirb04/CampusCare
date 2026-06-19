@@ -28,6 +28,50 @@
         transform: translateX(260%);
       }
     }
+
+    .maintenance-bot {
+      animation: botFloat 3.2s ease-in-out infinite;
+    }
+
+    .maintenance-bot .bot-arm {
+      transform-origin: 40px 105px;
+      animation: botWave 2.6s ease-in-out infinite;
+    }
+
+    .maintenance-bot .bot-eye {
+      animation: botBlink 3.8s ease-in-out infinite;
+    }
+
+    @keyframes botFloat {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    @keyframes botWave {
+      0%,
+      100% {
+        transform: rotate(0deg);
+      }
+      50% {
+        transform: rotate(-7deg);
+      }
+    }
+
+    @keyframes botBlink {
+      0%,
+      92%,
+      100% {
+        opacity: 1;
+      }
+      95% {
+        opacity: 0.25;
+      }
+    }
   </style>
 </head>
 
@@ -57,7 +101,36 @@
   </header>
 
   <main id="home">
-    <section class="bg-[linear-gradient(rgba(20,33,61,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(20,33,61,0.06)_1px,transparent_1px)] bg-[length:28px_28px]">
+    <section class="relative overflow-hidden bg-[linear-gradient(rgba(20,33,61,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(20,33,61,0.06)_1px,transparent_1px)] bg-[length:28px_28px]">
+        <div class="maintenance-bot pointer-events-none absolute left-[35.5%] top-[17%] z-10 hidden xl:block" aria-hidden="true">
+        <svg width="220" height="300" viewBox="0 0 150 205" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="74" cy="192" rx="38" ry="7" fill="#14213d" opacity="0.12"/>
+          <rect x="42" y="84" width="64" height="66" rx="19" fill="#0f5b6b" stroke="#14213d" stroke-width="4"/>
+          <rect x="58" y="101" width="32" height="49" rx="7" fill="#111827" opacity="0.86"/>
+          <circle cx="74" cy="116" r="2" fill="#f8fafc"/>
+          <circle cx="74" cy="130" r="2" fill="#f8fafc"/>
+          <path d="M59 84l15 18 15-18" stroke="#e0f2fe" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="48" y="9" width="54" height="51" rx="18" fill="#f8fafc" stroke="#14213d" stroke-width="4"/>
+          <rect x="38" y="31" width="73" height="49" rx="18" fill="#0e4f61" stroke="#14213d" stroke-width="4"/>
+          <rect x="47" y="44" width="56" height="20" rx="8" fill="#123747"/>
+          <ellipse class="bot-eye" cx="62" cy="54" rx="6" ry="9" fill="#38e8ff"/>
+          <ellipse class="bot-eye" cx="88" cy="54" rx="6" ry="9" fill="#38e8ff"/>
+          <path d="M51 32c-6-2-13 3-15 11v15c2 8 9 13 15 11V32zM99 32c6-2 13 3 15 11v15c-2 8-9 13-15 11V32z" fill="#0f5b6b" stroke="#14213d" stroke-width="3"/>
+          <g class="bot-arm">
+            <path d="M43 100c-11 3-19 12-22 24" stroke="#14213d" stroke-width="11" stroke-linecap="round"/>
+            <rect x="10" y="111" width="35" height="42" rx="5" fill="#f8fafc" stroke="#14213d" stroke-width="3"/>
+            <path d="M17 123h17M17 133h17M17 143h11" stroke="#0f5b6b" stroke-width="2" stroke-linecap="round"/>
+            <path d="M32 123l3 3 5-7M32 135l3 3 5-7" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          <path d="M105 100c10 6 16 15 17 27" stroke="#14213d" stroke-width="11" stroke-linecap="round"/>
+          <rect x="101" y="115" width="33" height="45" rx="5" fill="#67e8f9" stroke="#14213d" stroke-width="3" transform="rotate(-7 101 115)"/>
+          <path d="M109 129h16M109 139h14M109 149h11" stroke="#0f5b6b" stroke-width="2" stroke-linecap="round"/>
+          <path d="M59 150v25M89 150v25" stroke="#14213d" stroke-width="11" stroke-linecap="round"/>
+          <path d="M48 181h25M80 181h25" stroke="#14213d" stroke-width="10" stroke-linecap="round"/>
+          <circle cx="118" cy="92" r="13" fill="#f8fafc" stroke="#14213d" stroke-width="3"/>
+          <path d="M118 84v16M110 92h16" stroke="#0f5b6b" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
       <div class="mx-auto grid min-h-[calc(100vh-76px)] max-w-7xl items-center gap-12 px-5 py-14 lg:grid-cols-[1fr_0.92fr] lg:py-16">
         <div>
           <div class="mb-6 inline-flex items-center gap-3 rounded-full border border-white bg-white/75 px-4 py-2 text-sm font-bold text-slate-600 shadow-sm">
