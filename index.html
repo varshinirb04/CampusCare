@@ -5,6 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CampusCare - Smart Complaint Tracking System</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .highlight-line {
+      overflow: hidden;
+    }
+
+    .highlight-line::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      width: 45%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.75), transparent);
+      animation: highlightSweep 2.4s ease-in-out infinite;
+    }
+
+    @keyframes highlightSweep {
+      0% {
+        transform: translateX(-120%);
+      }
+      55%,
+      100% {
+        transform: translateX(260%);
+      }
+    }
+  </style>
 </head>
 
 <body class="bg-gradient-to-b from-sky-50 via-emerald-50 to-amber-50 font-sans text-[#14213d]">
@@ -45,7 +69,7 @@
             Campus problems,
             <span class="relative inline-block">
               <span class="relative z-10">solved with clarity.</span>
-              <span class="absolute bottom-1 left-1 h-3 w-[92%] rounded-full bg-amber-300/70"></span>
+              <span class="highlight-line absolute bottom-1 left-1 h-3 w-[92%] rounded-full bg-amber-300/70"></span>
             </span>
           </h1>
 
