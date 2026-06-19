@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CampusCare Portal</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    #dashboardBox:fullscreen,
+    #dashboardBox:-webkit-full-screen {
+      height: 100vh;
+      overflow-y: auto;
+      border-radius: 0;
+      padding: 2rem;
+    }
+  </style>
 </head>
 
 <body class="min-h-screen bg-gradient-to-b from-sky-50 via-emerald-50 to-amber-50 font-sans text-[#14213d]">
@@ -25,238 +34,285 @@
     </nav>
   </header>
 
-  <main class="mx-auto max-w-7xl px-5 py-12">
+  <main class="mx-auto max-w-7xl px-5 py-10">
 
     <!-- Personalized greeting loaded from Local Storage -->
-    <section class="mb-10 rounded-[2rem] bg-white/80 p-8 shadow-xl">
+    <section class="mb-6 rounded-[2rem] bg-white/80 p-8 shadow-xl">
       <h1 id="portalWelcome" class="text-4xl font-black">Welcome</h1>
       <p class="mt-3 text-slate-600">
         Exercise:2 This portal demonstrates five HTML5 APIs
       </p>
     </section>
 
-    <!-- Dashboard counters update whenever complaints are added or cleared -->
-    <section>
-      <div id="dashboardBox" class="rounded-3xl bg-[#14213d] p-6 text-white shadow-sm">
-        <h2 class="text-2xl font-black">Complaint Dashboard</h2>
-        <p class="mt-2 text-sm text-slate-300">Tickets submitted from the form are saved in this browser.</p>
-
-        <div class="mt-6 grid grid-cols-3 gap-3">
-          <div class="rounded-2xl bg-white/10 p-4 text-center">
-            <p id="totalCount" class="text-3xl font-black">0</p>
-            <p class="text-xs text-slate-300">Total</p>
-          </div>
-          <div class="rounded-2xl bg-white/10 p-4 text-center">
-            <p id="pendingCount" class="text-3xl font-black">0</p>
-            <p class="text-xs text-slate-300">Pending</p>
-          </div>
-          <div class="rounded-2xl bg-white/10 p-4 text-center">
-            <p id="resolvedCount" class="text-3xl font-black">0</p>
-            <p class="text-xs text-slate-300">Resolved</p>
-          </div>
-        </div>
-
-        <button onclick="openFullscreen()"
-          class="mt-6 rounded-xl bg-amber-400 px-5 py-3 font-bold text-[#14213d] hover:bg-amber-500">
-          Open Fullscreen
-        </button>
-
-        <button onclick="clearComplaints()"
-          class="mt-6 ml-2 rounded-xl bg-white/10 px-5 py-3 font-bold text-white hover:bg-white/20">
-          Clear Tickets
-        </button>
-
-<div class="mt-8 grid gap-5 lg:grid-cols-3">
-
-  <!-- Latest Complaint -->
-  <div class="rounded-2xl bg-white/10 p-5 lg:col-span-1">
-    <p class="text-xs font-black uppercase text-sky-200">Latest Complaint</p>
-    <h3 id="latestTicket" class="mt-2 text-xl font-black">No ticket yet</h3>
-    <p id="latestDetails" class="mt-2 text-sm text-slate-300">
-      Submit a complaint to view latest ticket details.
-    </p>
-  </div>
-
-  <!-- Status Timeline -->
-  <div class="rounded-2xl bg-white/10 p-5 lg:col-span-2">
-    <p class="text-xs font-black uppercase text-sky-200">Complaint Timeline</p>
-
-    <div class="mt-5 grid gap-3 sm:grid-cols-4">
-      <div id="stepPending" class="rounded-xl bg-white/10 p-3 text-center">
-        <p class="font-black">1</p>
-        <p class="text-xs text-slate-300">Pending</p>
-      </div>
-
-      <div id="stepProgress" class="rounded-xl bg-white/10 p-3 text-center">
-        <p class="font-black">2</p>
-        <p class="text-xs text-slate-300">In Progress</p>
-      </div>
-
-      <div id="stepResolved" class="rounded-xl bg-white/10 p-3 text-center">
-        <p class="font-black">3</p>
-        <p class="text-xs text-slate-300">Resolved</p>
-      </div>
-
-      <div id="stepFeedback" class="rounded-xl bg-white/10 p-3 text-center">
-        <p class="font-black">4</p>
-        <p class="text-xs text-slate-300">Feedback</p>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<!-- Feedback Section -->
-<div class="mt-5 rounded-2xl bg-white/10 p-5">
-  <p class="text-xs font-black uppercase text-sky-200">Resolution Feedback</p>
-  <p class="mt-2 text-sm text-slate-300">
-    Give feedback after your complaint is resolved.
-  </p>
-
-  <div class="mt-4 flex flex-col gap-3 md:flex-row">
-    <select id="ratingValue"
-      class="rounded-xl border border-white/20 bg-white/10 px-4 py-3 font-bold text-white outline-none">
-      <option value="">Select Rating</option>
-      <option value="5">★★★★★ Excellent</option>
-      <option value="4">★★★★ Good</option>
-      <option value="3">★★★ Average</option>
-      <option value="2">★★ Poor</option>
-      <option value="1">★ Bad</option>
-    </select>
-  
-    <input id="feedbackText" type="text" placeholder="Write short feedback"
-      class="flex-1 rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-slate-400 outline-none" />
-  
-    <button onclick="submitFeedback()"
-      class="rounded-xl bg-emerald-400 px-5 py-3 font-black text-[#14213d] hover:bg-emerald-500">
-      Submit Feedback
-    </button>
-  </div>
-  
-  <p id="feedbackResult" class="mt-3 text-sm font-bold text-emerald-300"></p>
-  </div>
-
-      </div>
-
-    </section>
-
-    <!-- Complaint form stores a new ticket in Local Storage -->
-    <section class="mt-6 rounded-3xl bg-white p-6 shadow-sm">
-      <h2 class="text-2xl font-black">Raise Complaint</h2>
-      <p class="mt-2 text-sm text-slate-600">
-        This form uses Geolocation API, File API, and Web Notification API.
-      </p>
-
-      <div class="mt-6 grid gap-5 lg:grid-cols-2">
-        <div>
-          <label class="font-bold">Complaint Title</label>
-          <input id="complaintTitle" type="text" placeholder="Example: Wi-Fi not working"
-            class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400" />
-        </div>
-
-        <div>
-          <label class="font-bold">Category</label>
-          <select id="complaintCategory"
-            class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400">
-            <option>Classroom</option>
-            <option>Laboratory</option>
-            <option>Wi-Fi</option>
-            <option>Library</option>
-            <option>Canteen</option>
-            <option>Transport</option>
-            <option>Maintenance</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="font-bold">Priority</label>
-          <select id="complaintPriority"
-            class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400">
-            <option>Low</option>
-            <option selected>Medium</option>
-            <option>High</option>
-          </select>
-        </div>
-        
-        <div class="lg:col-span-2 rounded-2xl bg-amber-50 p-5">
-          <h3 class="text-xl font-black">Smart Priority Suggestion</h3>
-          <p class="mt-1 text-sm text-slate-600">
-            JavaScript analyzes the complaint category and description to suggest priority and response time.
+    <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_430px] lg:items-start">
+      <div class="space-y-6">
+        <!-- Complaint form stores a new ticket in Local Storage -->
+        <section class="rounded-3xl bg-white p-6 shadow-sm">
+          <h2 class="text-2xl font-black">Raise Complaint</h2>
+          <p class="mt-2 text-sm text-slate-600">
+            This form uses Geolocation API, File API, and Web Notification API.
           </p>
 
-          <button type="button" onclick="suggestPriority()"
-            class="mt-4 rounded-xl bg-amber-400 px-5 py-3 font-bold text-[#14213d] hover:bg-amber-500">
-            Suggest Priority
+          <div class="mt-6 grid gap-5 lg:grid-cols-2">
+            <div>
+              <label class="font-bold">Complaint Title</label>
+              <input id="complaintTitle" type="text" placeholder="Example: Wi-Fi not working"
+                class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400" />
+              <p id="complaintTitleError" class="mt-1 text-sm font-bold text-rose-600"></p>
+            </div>
+
+            <div>
+              <label class="font-bold">Category</label>
+              <select id="complaintCategory"
+                class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400">
+                <option>Classroom</option>
+                <option>Laboratory</option>
+                <option>Wi-Fi</option>
+                <option>Library</option>
+                <option>Canteen</option>
+                <option>Transport</option>
+                <option>Maintenance</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="font-bold">Priority</label>
+              <select id="complaintPriority"
+                class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400">
+                <option>Low</option>
+                <option selected>Medium</option>
+                <option>High</option>
+              </select>
+            </div>
+            
+            <div class="lg:col-span-2 rounded-2xl bg-amber-50 p-5">
+              <h3 class="text-xl font-black">Smart Priority Suggestion</h3>
+              <p class="mt-1 text-sm text-slate-600">
+                JavaScript analyzes the complaint category and description to suggest priority and response time.
+              </p>
+
+              <button type="button" onclick="suggestPriority()"
+                class="mt-4 rounded-xl bg-amber-400 px-5 py-3 font-bold text-[#14213d] hover:bg-amber-500">
+                Suggest Priority
+              </button>
+
+              <p id="prioritySuggestion" class="mt-3 font-black text-rose-600"></p>
+              <p id="responseTime" class="mt-1 text-sm font-semibold text-slate-600"></p>
+              <p id="assignedDepartment" class="mt-1 text-sm font-semibold text-slate-600"></p>
+              <p id="automationSummary" class="mt-1 text-sm font-semibold text-slate-600"></p>
+            </div>
+
+            <div class="lg:col-span-2">
+              <label class="font-bold">Description</label>
+              <textarea id="complaintDescription" rows="4" placeholder="Describe your issue"
+                class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400"></textarea>
+              <p id="complaintDescriptionError" class="mt-1 text-sm font-bold text-rose-600"></p>
+            </div>
+          </div>
+
+          <!-- Geolocation API -->
+          <div class="mt-6 rounded-2xl bg-sky-50 p-5">
+            <h3 class="text-xl font-black">Complaint Location</h3>
+            <p class="mt-1 text-sm text-slate-600">Geolocation API detects your current location and opens it in Google Maps.</p>
+
+            <button onclick="getLocation()"
+              class="mt-4 rounded-xl bg-emerald-500 px-5 py-3 font-bold text-white hover:bg-emerald-600">
+              Detect My Location
+            </button>
+
+            <p id="locationResult" class="mt-3 text-sm font-semibold text-slate-700"></p>
+
+            <a id="mapLink" href="#" target="_blank"
+              class="mt-3 hidden inline-block rounded-xl bg-[#14213d] px-5 py-2 font-bold text-white hover:bg-slate-800">
+              Open in Google Maps
+            </a>
+          </div>
+
+          <!-- File API -->
+          <div class="mt-6 rounded-2xl bg-emerald-50 p-5">
+            <h3 class="text-xl font-black">Upload Complaint Proof</h3>
+            <p class="mt-1 text-sm text-slate-600">File API previews the uploaded image before submission.</p>
+
+            <input id="complaintFile" type="file" accept="image/*" onchange="previewFile(event)"
+              class="mt-4 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm" />
+            <p id="complaintFileError" class="mt-2 text-sm font-bold text-rose-600"></p>
+
+            <img id="filePreview" src="" alt="Complaint proof preview"
+              class="mt-4 hidden h-56 w-full rounded-2xl object-cover" />
+
+            <button onclick="removeFile()"
+              class="mt-4 hidden rounded-xl bg-rose-500 px-5 py-3 font-bold text-white hover:bg-rose-600"
+              id="removeFileBtn">
+              Remove File
+            </button>
+          </div>
+
+          <button onclick="submitComplaint()"
+            class="mt-8 rounded-xl bg-sky-500 px-7 py-4 font-black text-white shadow-xl shadow-sky-200 hover:bg-sky-600">
+            Submit Complaint
           </button>
 
-          <p id="prioritySuggestion" class="mt-3 font-black text-rose-600"></p>
-          <p id="responseTime" class="mt-1 text-sm font-semibold text-slate-600"></p>
-        </div>
+          <p id="submitResult" class="mt-4 text-lg font-black text-emerald-600"></p>
+        </section>
 
-        <div class="lg:col-span-2">
-          <label class="font-bold">Description</label>
-          <textarea id="complaintDescription" rows="4" placeholder="Describe your issue"
-            class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400"></textarea>
-        </div>
+        <!-- Submitted complaints are rendered here from browser storage -->
+        <section class="rounded-3xl bg-white p-6 shadow-sm">
+          <div>
+            <h2 class="text-2xl font-black">Recent Complaints</h2>
+            <p class="mt-2 text-sm text-slate-600">Search and track your tickets.</p>
+          </div>
+
+          <div class="mt-5 grid gap-3 md:grid-cols-[1fr_220px]">
+            <input id="complaintSearch" type="search" placeholder="Search by ticket ID or title"
+              oninput="renderComplaints()"
+              class="rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400" />
+
+            <select id="complaintStatusFilter" onchange="renderComplaints()"
+              class="rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400">
+              <option>All</option>
+              <option>Pending</option>
+              <option>In Progress</option>
+              <option>Resolved</option>
+            </select>
+          </div>
+
+          <div id="complaintList" class="mt-5 grid gap-3"></div>
+        </section>
       </div>
 
-      <!-- Geolocation API -->
-      <div class="mt-6 rounded-2xl bg-sky-50 p-5">
-        <h3 class="text-xl font-black">Complaint Location</h3>
-        <p class="mt-1 text-sm text-slate-600">Geolocation API detects your current location and opens it in Google Maps.</p>
+      <aside class="lg:sticky lg:top-28">
+        <!-- Dashboard counters update whenever complaints are added or cleared -->
+        <section id="dashboardBox" class="rounded-3xl bg-[#14213d] p-6 text-white shadow-sm">
+          <h2 class="text-2xl font-black">Complaint Dashboard</h2>
+          <p class="mt-2 text-sm text-slate-300">Tickets submitted from the form are saved in this browser.</p>
 
-        <button onclick="getLocation()"
-          class="mt-4 rounded-xl bg-emerald-500 px-5 py-3 font-bold text-white hover:bg-emerald-600">
-          Detect My Location
-        </button>
+          <div class="mt-6 grid grid-cols-2 gap-3">
+            <div class="rounded-2xl bg-white/10 p-4 text-center">
+              <p id="totalCount" class="text-3xl font-black">0</p>
+              <p class="text-xs text-slate-300">Total</p>
+            </div>
+            <div class="rounded-2xl bg-white/10 p-4 text-center">
+              <p id="pendingCount" class="text-3xl font-black">0</p>
+              <p class="text-xs text-slate-300">Pending</p>
+            </div>
+            <div class="rounded-2xl bg-white/10 p-4 text-center">
+              <p id="progressCount" class="text-3xl font-black">0</p>
+              <p class="text-xs text-slate-300">In Progress</p>
+            </div>
+            <div class="rounded-2xl bg-white/10 p-4 text-center">
+              <p id="resolvedCount" class="text-3xl font-black">0</p>
+              <p class="text-xs text-slate-300">Resolved</p>
+            </div>
+          </div>
 
-        <p id="locationResult" class="mt-3 text-sm font-semibold text-slate-700"></p>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <button onclick="openFullscreen()"
+              class="rounded-xl bg-amber-400 px-5 py-3 font-bold text-[#14213d] hover:bg-amber-500">
+              Fullscreen
+            </button>
 
-        <a id="mapLink" href="#" target="_blank"
-          class="mt-3 hidden inline-block rounded-xl bg-[#14213d] px-5 py-2 font-bold text-white hover:bg-slate-800">
-          Open in Google Maps
-        </a>
-      </div>
+            <button onclick="clearComplaints()"
+              class="rounded-xl bg-white/10 px-5 py-3 font-bold text-white hover:bg-white/20">
+              Clear Tickets
+            </button>
+          </div>
 
-      <!-- File API -->
-      <div class="mt-6 rounded-2xl bg-emerald-50 p-5">
-        <h3 class="text-xl font-black">Upload Complaint Proof</h3>
-        <p class="mt-1 text-sm text-slate-600">File API previews the uploaded image before submission.</p>
+          <!-- Latest Complaint -->
+          <div class="mt-6 rounded-2xl bg-white/10 p-5">
+            <p class="text-xs font-black uppercase text-sky-200">Latest Complaint</p>
+            <h3 id="latestTicket" class="mt-2 text-xl font-black">No ticket yet</h3>
+            <p id="latestDetails" class="mt-2 text-sm text-slate-300">
+              Submit a complaint to view latest ticket details.
+            </p>
+            <p id="latestRemark" class="mt-2 text-sm font-semibold text-amber-200"></p>
+          </div>
 
-        <input id="complaintFile" type="file" accept="image/*" onchange="previewFile(event)"
-          class="mt-4 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm" />
+          <!-- Status Timeline -->
+          <div class="mt-5 rounded-2xl bg-white/10 p-5">
+            <p class="text-xs font-black uppercase text-sky-200">Complaint Timeline</p>
+            <p id="timelineStatusText" class="mt-2 text-sm text-slate-300">
+              Submit a complaint to start the timeline.
+            </p>
 
-        <img id="filePreview" src="" alt="Complaint proof preview"
-          class="mt-4 hidden h-56 w-full rounded-2xl object-cover" />
+            <div class="mt-5 grid grid-cols-2 gap-3">
+              <div id="stepPending" class="rounded-xl bg-white/10 p-3 text-center">
+                <p class="font-black">Step 1</p>
+                <p class="text-xs text-slate-300">Pending</p>
+              </div>
 
-        <button onclick="removeFile()"
-          class="mt-4 hidden rounded-xl bg-rose-500 px-5 py-3 font-bold text-white hover:bg-rose-600"
-          id="removeFileBtn">
-          Remove File
-        </button>
-      </div>
+              <div id="stepProgress" class="rounded-xl bg-white/10 p-3 text-center">
+                <p class="font-black">Step 2</p>
+                <p class="text-xs text-slate-300">In Progress</p>
+              </div>
 
-      <button onclick="submitComplaint()"
-        class="mt-8 rounded-xl bg-sky-500 px-7 py-4 font-black text-white shadow-xl shadow-sky-200 hover:bg-sky-600">
-        Submit Complaint
-      </button>
+              <div id="stepResolved" class="rounded-xl bg-white/10 p-3 text-center">
+                <p class="font-black">Step 3</p>
+                <p class="text-xs text-slate-300">Resolved</p>
+              </div>
 
-      <p id="submitResult" class="mt-4 text-lg font-black text-emerald-600"></p>
-    </section>
+              <div id="stepFeedback" class="rounded-xl bg-white/10 p-3 text-center">
+                <p class="font-black">Step 4</p>
+                <p class="text-xs text-slate-300">Feedback</p>
+              </div>
+            </div>
+          </div>
 
-    <!-- Submitted complaints are rendered here from browser storage -->
-    <section class="mt-6 rounded-3xl bg-white p-6 shadow-sm">
-      <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
-        <div>
-          <h2 class="text-2xl font-black">Recent Complaints</h2>
-          <p class="mt-2 text-sm text-slate-600">New submissions appear here and stay after refresh.</p>
-        </div>
-      </div>
+          <!-- Feedback Section -->
+          <div class="mt-5 rounded-2xl bg-white/10 p-5">
+            <p class="text-xs font-black uppercase text-sky-200">Resolution Feedback</p>
+            <p class="mt-2 text-sm text-slate-300">
+              Give feedback after your complaint is resolved.
+            </p>
 
-      <div id="complaintList" class="mt-5 grid gap-3"></div>
-    </section>
+            <div class="mt-4 grid gap-3">
+              <select id="ratingValue"
+                class="rounded-xl border border-white/20 bg-white/10 px-4 py-3 font-bold text-white outline-none">
+                <option value="">Select Rating</option>
+                <option value="5">★★★★★ Excellent</option>
+                <option value="4">★★★★ Good</option>
+                <option value="3">★★★ Average</option>
+                <option value="2">★★ Poor</option>
+                <option value="1">★ Bad</option>
+              </select>
+            
+              <input id="feedbackText" type="text" placeholder="Write short feedback"
+                class="rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-slate-400 outline-none" />
+            
+              <button onclick="submitFeedback()"
+                class="rounded-xl bg-emerald-400 px-5 py-3 font-black text-[#14213d] hover:bg-emerald-500">
+                Submit Feedback
+              </button>
+            </div>
+            
+            <p id="feedbackError" class="mt-2 text-sm font-bold text-rose-300"></p>
+            <p id="feedbackResult" class="mt-3 text-sm font-bold text-emerald-300"></p>
+          </div>
+
+        </section>
+      </aside>
+    </div>
 
   </main>
+
+  <footer class="bg-[#14213d] py-8 text-white">
+    <div class="mx-auto grid max-w-7xl gap-5 px-5 md:grid-cols-3">
+      <div>
+        <h2 class="text-xl font-black">CampusCare Student Portal</h2>
+        <p class="mt-2 text-sm text-slate-300">Raise complaints, track status, and submit feedback after resolution.</p>
+      </div>
+
+      <div>
+        <h3 class="text-sm font-black uppercase text-sky-200">Student Features</h3>
+        <p class="mt-2 text-sm text-slate-300">Complaint form, location detection, proof upload, ticket copy, timeline, and feedback.</p>
+      </div>
+
+      <div>
+        <h3 class="text-sm font-black uppercase text-sky-200">Support</h3>
+        <p class="mt-2 text-sm text-slate-300">Contact: 9095049917 - VARSHINI R B</p>
+        <p class="mt-1 text-sm text-slate-300">Demo data is stored in this browser using Local Storage.</p>
+      </div>
+    </div>
+  </footer>
 
  <script src="js/script.js"></script>
 

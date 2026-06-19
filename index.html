@@ -256,9 +256,11 @@
 
       <input id="portalLoginName" type="text" placeholder="Enter your name"
         class="mt-5 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400" />
+      <p id="portalLoginNameError" class="mt-1 text-sm font-bold text-rose-600"></p>
 
       <input id="portalLoginEmail" type="email" placeholder="Enter your email"
         class="mt-3 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400" />
+      <p id="portalLoginEmailError" class="mt-1 text-sm font-bold text-rose-600"></p>
 
       <button type="button" onclick="continueToPortal()"
         class="mt-5 w-full rounded-xl bg-sky-500 px-5 py-3 font-black text-white hover:bg-sky-600">
@@ -270,9 +272,11 @@
 
       <input id="adminEmail" type="email" placeholder="Admin email"
         class="mt-3 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400" />
+      <p id="adminEmailError" class="mt-1 text-sm font-bold text-rose-600"></p>
 
       <input id="adminPassword" type="password" placeholder="Admin password"
         class="mt-3 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400" />
+      <p id="adminPasswordError" class="mt-1 text-sm font-bold text-rose-600"></p>
 
       <button type="button" onclick="adminLogin()"
         class="mt-4 w-full rounded-xl bg-[#14213d] px-5 py-3 font-black text-white hover:bg-slate-800">
@@ -282,25 +286,60 @@
       <p class="mt-2 text-xs text-slate-500">
         Demo: admin@campuscare.com / admin123
       </p>
+      <p id="adminLoginError" class="mt-2 text-sm font-bold text-rose-600"></p>
     </div>
 
     </div>
   </div>
 
   <footer id="contact" class="bg-[#14213d] py-10 text-white">
-    <div class="mx-auto flex max-w-7xl flex-col justify-between gap-6 px-5 md:flex-row md:items-center">
+    <div class="mx-auto grid max-w-7xl gap-6 px-5 md:grid-cols-[1.4fr_1fr_1fr]">
       <div>
         <h2 class="text-2xl font-black">CampusCare</h2>
-        <p class="mt-2 text-slate-300">Smart Complaint Tracking System for Educational Institutions</p>
+        <p class="mt-2 text-slate-300">Smart Complaint Tracking System for Christ University</p>
         <p class="mt-2 text-slate-300">Contact: 9095049917 - VARSHINI R B</p>
       </div>
-      <div class="text-sm font-bold text-slate-300">
-        © 2026 CampusCare. Built for faster campus support.
+
+      <div>
+        <h3 class="text-sm font-black uppercase text-sky-200">Contact Us</h3>
+        <p class="mt-2 text-sm text-slate-300">Email: campuscare@christuniversity.in</p>
+        <p class="mt-1 text-sm text-slate-300">Office: 080-4012-9100</p>
+        <p class="mt-1 text-sm text-slate-300">Support Hours: 9:00 AM - 6:00 PM</p>
       </div>
+
+      <div>
+        <h3 class="text-sm font-black uppercase text-sky-200">Reach Us</h3>
+        <p class="mt-2 text-sm text-slate-300">R&D Block, 8th Floor</p>
+        <p class="mt-1 text-sm text-slate-300">Christ University Campus</p>
+      </div>
+    </div>
+
+    <div class="mx-auto mt-8 max-w-7xl border-t border-white/10 px-5 pt-5 text-sm font-bold text-slate-300">
+        © 2026 CampusCare. Built for faster campus support.
     </div>
   </footer>
 
   <script>
+    function isValidStudentName(name) {
+      return /^[A-Za-z ]{3,}$/.test(name);
+    }
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function setLoginError(id, message) {
+      document.getElementById(id).innerText = message;
+    }
+
+    function clearLoginErrors() {
+      setLoginError("portalLoginNameError", "");
+      setLoginError("portalLoginEmailError", "");
+      setLoginError("adminEmailError", "");
+      setLoginError("adminPasswordError", "");
+      setLoginError("adminLoginError", "");
+    }
+
     // Opens the modal and fills saved details if the user has logged in before.
     function openPortalLogin() {
       const modal = document.getElementById("portalLoginModal");
@@ -309,6 +348,7 @@
 
       document.getElementById("portalLoginName").value = savedName || "";
       document.getElementById("portalLoginEmail").value = savedEmail || "";
+      clearLoginErrors();
       modal.classList.remove("hidden");
       modal.classList.add("flex");
     }
@@ -324,9 +364,27 @@
     function continueToPortal() {
       const name = document.getElementById("portalLoginName").value.trim();
       const email = document.getElementById("portalLoginEmail").value.trim();
+      let isValid = true;
 
-      if (!name || !email) {
-        alert("Please enter both name and email.");
+      clearLoginErrors();
+
+      if (!name) {
+        setLoginError("portalLoginNameError", "Student name is required.");
+        isValid = false;
+      } else if (!isValidStudentName(name)) {
+        setLoginError("portalLoginNameError", "Use at least 3 letters. Only letters and spaces allowed.");
+        isValid = false;
+      }
+
+      if (!email) {
+        setLoginError("portalLoginEmailError", "Email is required.");
+        isValid = false;
+      } else if (!isValidEmail(email)) {
+        setLoginError("portalLoginEmailError", "Enter a valid email address.");
+        isValid = false;
+      }
+
+      if (!isValid) {
         return;
       }
 
@@ -339,12 +397,32 @@
   function adminLogin() {
     const email = document.getElementById("adminEmail").value.trim();
     const password = document.getElementById("adminPassword").value.trim();
+    let isValid = true;
+
+    clearLoginErrors();
+
+    if (!email) {
+      setLoginError("adminEmailError", "Admin email is required.");
+      isValid = false;
+    } else if (!isValidEmail(email)) {
+      setLoginError("adminEmailError", "Enter a valid admin email address.");
+      isValid = false;
+    }
+
+    if (!password) {
+      setLoginError("adminPasswordError", "Admin password is required.");
+      isValid = false;
+    }
+
+    if (!isValid) {
+      return;
+    }
 
     if (email === "admin@campuscare.com" && password === "admin123") {
       localStorage.setItem("activeRole", "admin");
       window.location.href = "admin.html";
     } else {
-      alert("Invalid admin email or password.");
+      setLoginError("adminLoginError", "Invalid admin email or password.");
     }
  }
   </script>

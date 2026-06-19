@@ -33,11 +33,74 @@
     </p>
   </section>
 
+  <section class="mt-6 rounded-3xl bg-[#14213d] p-6 text-white shadow-sm">
+    <h2 class="text-2xl font-black">Complaint Timeline Summary</h2>
+    <p class="mt-2 text-sm text-slate-300">
+      These are real counts from all submitted complaints.
+    </p>
+
+    <div class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      <div class="rounded-2xl bg-white/10 p-4 text-center">
+        <p id="adminTotalCount" class="text-3xl font-black">0</p>
+        <p class="text-xs text-slate-300">Total</p>
+      </div>
+      <div class="rounded-2xl bg-white/10 p-4 text-center">
+        <p id="adminPendingCount" class="text-3xl font-black">0</p>
+        <p class="text-xs text-slate-300">Pending</p>
+      </div>
+      <div class="rounded-2xl bg-white/10 p-4 text-center">
+        <p id="adminProgressCount" class="text-3xl font-black">0</p>
+        <p class="text-xs text-slate-300">In Progress</p>
+      </div>
+      <div class="rounded-2xl bg-white/10 p-4 text-center">
+        <p id="adminResolvedCount" class="text-3xl font-black">0</p>
+        <p class="text-xs text-slate-300">Resolved</p>
+      </div>
+      <div class="rounded-2xl bg-white/10 p-4 text-center">
+        <p id="adminFeedbackCount" class="text-3xl font-black">0</p>
+        <p class="text-xs text-slate-300">Feedback Received</p>
+      </div>
+    </div>
+  </section>
+
   <section class="mt-6 rounded-3xl bg-white p-6 shadow-sm">
     <h2 class="text-2xl font-black">All Complaints</h2>
+    <div class="mt-5 grid gap-3 md:grid-cols-[1fr_220px]">
+      <input id="adminSearch" type="search" placeholder="Search by ticket ID or title"
+        oninput="renderAdminComplaints()"
+        class="rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400" />
+
+      <select id="adminStatusFilter" onchange="renderAdminComplaints()"
+        class="rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400">
+        <option>All</option>
+        <option>Pending</option>
+        <option>In Progress</option>
+        <option>Resolved</option>
+      </select>
+    </div>
     <div id="adminComplaintList" class="mt-5 grid gap-4"></div>
   </section>
 </main>
+
+<footer class="bg-[#14213d] py-8 text-white">
+  <div class="mx-auto grid max-w-7xl gap-5 px-5 md:grid-cols-3">
+    <div>
+      <h2 class="text-xl font-black">CampusCare Admin Portal</h2>
+      <p class="mt-2 text-sm text-slate-300">Review complaints, update status, add remarks, and monitor feedback.</p>
+    </div>
+
+    <div>
+      <h3 class="text-sm font-black uppercase text-sky-200">Admin Tools</h3>
+      <p class="mt-2 text-sm text-slate-300">Status filter, ticket search, status timeline counts, and student feedback visibility.</p>
+    </div>
+
+    <div>
+      <h3 class="text-sm font-black uppercase text-sky-200">Project Info</h3>
+      <p class="mt-2 text-sm text-slate-300">Full Stack Development - CampusCare prototype</p>
+      <p class="mt-1 text-sm text-slate-300">Built with HTML5, Tailwind CSS, and JavaScript.</p>
+    </div>
+  </div>
+</footer>
 
 <script src="js/script.js"></script>
 <script src="js/admin.js"></script>

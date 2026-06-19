@@ -18,6 +18,17 @@ function setText(id, value) {
   }
 }
 
+function setError(id, message) {
+  setText(id, message);
+}
+
+function clearStudentErrors() {
+  setError("complaintTitleError", "");
+  setError("complaintDescriptionError", "");
+  setError("complaintFileError", "");
+  setError("feedbackError", "");
+}
+
 // Prevents user-entered complaint text from being inserted as HTML.
 function escapeHtml(value) {
   return String(value)
@@ -26,6 +37,41 @@ function escapeHtml(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+function isValidComplaintTitle(title) {
+  return title.length >= 5;
+}
+
+function isValidComplaintDescription(description) {
+  return description.length >= 20;
+}
+
+function isValidImageFile(file) {
+  return file && file.type.startsWith("image/");
+}
+
+function isValidFeedback(feedback) {
+  return feedback.length >= 10;
+}
+
+function normalizeSearchText(value) {
+  return String(value).toLowerCase().replace(/[\s-]/g, "");
+}
+
+function filterComplaints(complaints) {
+  const search = normalizeSearchText(document.getElementById("complaintSearch")?.value || "");
+  const status = document.getElementById("complaintStatusFilter")?.value || "All";
+
+  return complaints.filter(function (complaint) {
+    const matchesStatus = status === "All" || complaint.status === status;
+    const searchableText = normalizeSearchText(complaint.id + " " + complaint.title);
+    const matchesSearch =
+      !search ||
+      searchableText.includes(search);
+
+    return matchesStatus && matchesSearch;
+  });
 }
 
 // Requires the user to login from index.html before using the portal.
@@ -47,6 +93,9 @@ function renderComplaints() {
   const pending = complaints.filter(function (complaint) {
     return complaint.status === "Pending";
   }).length;
+  const inProgress = complaints.filter(function (complaint) {
+    return complaint.status === "In Progress";
+  }).length;
   const resolved = complaints.filter(function (complaint) {
     return complaint.status === "Resolved";
   }).length;
@@ -54,11 +103,14 @@ function renderComplaints() {
   //updates the dashboard numbers
   setText("totalCount", total);
   setText("pendingCount", pending);
+  setText("progressCount", inProgress);
   setText("resolvedCount", resolved);
   renderDashboardExtras(complaints);
 
   const list = document.getElementById("complaintList");
   if (!list) return;
+
+  const visibleComplaints = filterComplaints(complaints);
 
   if (complaints.length === 0) {
     list.innerHTML =
@@ -66,11 +118,19 @@ function renderComplaints() {
     return;
   }
 
-  list.innerHTML = complaints
+  if (visibleComplaints.length === 0) {
+    list.innerHTML =
+      '<p class="rounded-2xl bg-slate-50 p-4 text-sm font-semibold text-slate-500">No matching complaints found.</p>';
+    return;
+  }
+
+  list.innerHTML = visibleComplaints
     .map(function (complaint) {
       const statusClass =
         complaint.status === "Resolved"
           ? "bg-emerald-100 text-emerald-700"
+          : complaint.status === "In Progress"
+          ? "bg-sky-100 text-sky-700"
           : "bg-amber-100 text-amber-700";
 
       // Builds the HTML for each complaint ticket
@@ -89,6 +149,11 @@ function renderComplaints() {
         '<p class="mt-2 text-sm text-slate-600">' +
         escapeHtml(complaint.description) +
         "</p>" +
+        (complaint.adminRemark
+          ? '<p class="mt-3 rounded-xl bg-amber-50 p-3 text-sm font-semibold text-amber-700">Admin Remark: ' +
+            escapeHtml(complaint.adminRemark) +
+            "</p>"
+          : "") +
         "</div>" +
         '<span class="rounded-full px-3 py-1 text-xs font-black ' +
         statusClass +
@@ -154,6 +219,14 @@ function previewFile(event) {
 
   if (!file) return;
 
+  setError("complaintFileError", "");
+
+  if (!isValidImageFile(file)) {
+    setError("complaintFileError", "Please upload only image files.");
+    removeFile();
+    return;
+  }
+
   currentFileName = file.name;
   preview.src = URL.createObjectURL(file);
   preview.classList.remove("hidden");
@@ -207,11 +280,35 @@ function copyTicketId(ticketId) {
 
 // Creates a new pending complaint and stores it in the browser.
 function submitComplaint() {
+  clearStudentErrors();
+
   const title = document.getElementById("complaintTitle").value.trim();
   const description = document.getElementById("complaintDescription").value.trim();
+  const file = document.getElementById("complaintFile").files[0];
+  let isValid = true;
 
-  if (!title || !description) {
-    alert("Please enter complaint title and description.");
+  if (!title) {
+    setError("complaintTitleError", "Complaint title is required.");
+    isValid = false;
+  } else if (!isValidComplaintTitle(title)) {
+    setError("complaintTitleError", "Complaint title must be at least 5 characters.");
+    isValid = false;
+  }
+
+  if (!description) {
+    setError("complaintDescriptionError", "Complaint description is required.");
+    isValid = false;
+  } else if (!isValidComplaintDescription(description)) {
+    setError("complaintDescriptionError", "Complaint description must be at least 20 characters.");
+    isValid = false;
+  }
+
+  if (file && !isValidImageFile(file)) {
+    setError("complaintFileError", "Please upload only image files.");
+    isValid = false;
+  }
+
+  if (!isValid) {
     return;
   }
 
@@ -224,6 +321,7 @@ function submitComplaint() {
     title: title,
     category: document.getElementById("complaintCategory").value,
     priority: document.getElementById("complaintPriority").value,
+    department: document.getElementById("assignedDepartment").innerText || "Not assigned",
     responseTime: document.getElementById("responseTime").innerText || "Not calculated",
     status: "Pending",
     description: description,
@@ -241,55 +339,92 @@ function submitComplaint() {
 
 function suggestPriority() {
   const category = document.getElementById("complaintCategory").value.toLowerCase();
-  const description = document.getElementById("complaintDescription").value.toLowerCase();
+  const title = document.getElementById("complaintTitle").value.trim();
+  const description = document.getElementById("complaintDescription").value.trim();
   const priorityField = document.getElementById("complaintPriority");
+
+  if (!title || !description) {
+    setText("prioritySuggestion", "Please state the problem first.");
+    setText("responseTime", "Enter complaint title and description to get a suggestion.");
+    setText("assignedDepartment", "");
+    setText("automationSummary", "");
+    return;
+  }
+
+  const descriptionLower = description.toLowerCase();
 
   let priority = "Medium";
   let responseTime = "Expected response time: Within 2 working days";
+  let department = "General Support";
 
   if (
-    category.includes("maintenance") ||
-    description.includes("fire") ||
-    description.includes("spark") ||
-    description.includes("shock") ||
-    description.includes("leakage") ||
-    description.includes("broken wire")
+    descriptionLower.includes("fire") ||
+    descriptionLower.includes("spark") ||
+    descriptionLower.includes("shock") ||
+    descriptionLower.includes("broken wire") ||
+    descriptionLower.includes("leakage")
   ) {
     priority = "High";
     responseTime = "Expected response time: Immediate attention required";
+    department = "Maintenance / Safety Team";
   } else if (
-    category.includes("wi-fi") ||
-    category.includes("laboratory") ||
-    description.includes("exam") ||
-    description.includes("system not working") ||
-    description.includes("internet")
-  ) {
+  category.includes("wi-fi") ||
+  category.includes("wifi") ||
+  title.toLowerCase().includes("wi-fi") ||
+  title.toLowerCase().includes("wifi") ||
+  descriptionLower.includes("wi-fi") ||
+  descriptionLower.includes("wifi") ||
+  descriptionLower.includes("internet") ||
+  descriptionLower.includes("network")
+) {
     priority = "High";
     responseTime = "Expected response time: Within 24 hours";
-  } else if (
-    category.includes("library") ||
-    category.includes("canteen") ||
-    category.includes("transport")
-  ) {
+    department = "IT Support Team";
+  } else if (category.includes("laboratory")) {
+    priority = "High";
+    responseTime = "Expected response time: Within 24 hours";
+    department = "Lab Support Team";
+  } else if (category.includes("canteen")) {
     priority = "Medium";
     responseTime = "Expected response time: Within 2 working days";
+    department = "Canteen Committee";
+  } else if (category.includes("library")) {
+    priority = "Medium";
+    responseTime = "Expected response time: Within 2 working days";
+    department = "Library Support Team";
+  } else if (category.includes("transport")) {
+    priority = "Medium";
+    responseTime = "Expected response time: Within 2 working days";
+    department = "Transport Office";
   } else {
     priority = "Low";
     responseTime = "Expected response time: Within 3 to 5 working days";
+    department = "Campus Support Team";
   }
 
   priorityField.value = priority;
   setText("prioritySuggestion", "Suggested Priority: " + priority);
   setText("responseTime", responseTime);
+  setText("assignedDepartment", "Assigned Department: " + department);
 }
 
 function clearComplaintForm() {
   document.getElementById("complaintTitle").value = "";
   document.getElementById("complaintDescription").value = "";
   document.getElementById("complaintPriority").value = "Medium";
+
   document.getElementById("locationResult").innerText = "";
   document.getElementById("mapLink").classList.add("hidden");
+  clearStudentErrors();
+
+  // Reset Smart Automation Section
+  setText("prioritySuggestion", "Click 'Suggest Priority' after entering a complaint.");
+  setText("responseTime", "");
+  setText("assignedDepartment", "");
+  setText("automationSummary", "");
+
   currentLocation = "";
+
   removeFile();
 }
 
@@ -315,12 +450,14 @@ function openFullscreen() {
 function renderDashboardExtras(complaints) {
   const latestTicket = document.getElementById("latestTicket");
   const latestDetails = document.getElementById("latestDetails");
+  const latestRemark = document.getElementById("latestRemark");
 
   if (!latestTicket || !latestDetails) return;
 
   if (complaints.length === 0) {
     latestTicket.innerText = "No ticket yet";
     latestDetails.innerText = "Submit a complaint to view latest ticket details.";
+    if (latestRemark) latestRemark.innerText = "";
     updateTimeline("");
     return;
   }
@@ -330,6 +467,9 @@ function renderDashboardExtras(complaints) {
   latestTicket.innerText = latest.id;
   latestDetails.innerText =
     latest.category + " | " + latest.priority + " Priority | " + latest.status;
+  if (latestRemark) {
+    latestRemark.innerText = latest.adminRemark ? "Admin Remark: " + latest.adminRemark : "";
+  }
 
   updateTimeline(latest.status);
 
@@ -345,6 +485,7 @@ function renderDashboardExtras(complaints) {
 
 function updateTimeline(status) {
   const steps = ["stepPending", "stepProgress", "stepResolved", "stepFeedback"];
+  const timelineStatusText = document.getElementById("timelineStatusText");
 
   steps.forEach(function (id) {
     const step = document.getElementById(id);
@@ -355,11 +496,17 @@ function updateTimeline(status) {
 
   if (status === "Pending") {
     document.getElementById("stepPending")?.classList.add("bg-amber-400", "text-[#14213d]");
+    if (timelineStatusText) {
+      timelineStatusText.innerText = "Your complaint has been submitted and is waiting for admin review.";
+    }
   }
 
   if (status === "In Progress") {
     document.getElementById("stepPending")?.classList.add("bg-emerald-400", "text-[#14213d]");
     document.getElementById("stepProgress")?.classList.add("bg-amber-400", "text-[#14213d]");
+    if (timelineStatusText) {
+      timelineStatusText.innerText = "Admin has started working on this complaint.";
+    }
   }
 
   if (status === "Resolved") {
@@ -367,21 +514,29 @@ function updateTimeline(status) {
     document.getElementById("stepProgress")?.classList.add("bg-emerald-400", "text-[#14213d]");
     document.getElementById("stepResolved")?.classList.add("bg-emerald-400", "text-[#14213d]");
     document.getElementById("stepFeedback")?.classList.add("bg-sky-400", "text-[#14213d]");
+    if (timelineStatusText) {
+      timelineStatusText.innerText = "The complaint is resolved. You can now submit feedback.";
+    }
+  }
+
+  if (!status && timelineStatusText) {
+    timelineStatusText.innerText = "Submit a complaint to start the timeline.";
   }
 }
 
 function submitFeedback() {
+  setError("feedbackError", "");
   const complaints = getComplaints();
 
   if (complaints.length === 0) {
-    alert("Submit a complaint first.");
+    setError("feedbackError", "Submit a complaint first.");
     return;
   }
 
   const latest = complaints[0];
 
   if (latest.status !== "Resolved") {
-    alert("Feedback can be submitted only after the complaint is resolved.");
+    setError("feedbackError", "Feedback can be submitted only after the complaint is resolved.");
     return;
   }
 
@@ -389,7 +544,12 @@ function submitFeedback() {
   const feedback = document.getElementById("feedbackText").value.trim();
 
   if (!rating || !feedback) {
-    alert("Please select rating and enter feedback.");
+    setError("feedbackError", "Please select rating and enter feedback.");
+    return;
+  }
+
+  if (!isValidFeedback(feedback)) {
+    setError("feedbackError", "Feedback must be at least 10 characters.");
     return;
   }
 
@@ -400,6 +560,7 @@ function submitFeedback() {
   saveComplaints(complaints);
 
   setText("feedbackResult", "Feedback submitted successfully. Thank you!");
+  setError("feedbackError", "");
   document.getElementById("ratingValue").value = "";
   document.getElementById("feedbackText").value = "";
 
@@ -408,6 +569,8 @@ function submitFeedback() {
 
 // Load saved user and complaint data when the portal opens.
 window.addEventListener("load", function () {
-  loadPortalUser();
-  renderComplaints();
+  if (document.getElementById("portalWelcome")) {
+    loadPortalUser();
+    renderComplaints();
+  }
 });
