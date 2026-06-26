@@ -53,6 +53,7 @@
             This form uses Geolocation API, File API, and Web Notification API.
           </p>
 
+          <form id="complaintForm">
           <div class="mt-6 grid gap-5 lg:grid-cols-2">
             <div>
               <label class="font-bold">Complaint Title</label>
@@ -115,7 +116,7 @@
             <h3 class="text-xl font-black">Complaint Location</h3>
             <p class="mt-1 text-sm text-slate-600">Geolocation API detects your current location and opens it in Google Maps.</p>
 
-            <button onclick="getLocation()"
+            <button type="button" onclick="getLocation()"
               class="mt-4 rounded-xl bg-emerald-500 px-5 py-3 font-bold text-white hover:bg-emerald-600">
               Detect My Location
             </button>
@@ -140,17 +141,18 @@
             <img id="filePreview" src="" alt="Complaint proof preview"
               class="mt-4 hidden h-56 w-full rounded-2xl object-cover" />
 
-            <button onclick="removeFile()"
+            <button type="button" onclick="removeFile()"
               class="mt-4 hidden rounded-xl bg-rose-500 px-5 py-3 font-bold text-white hover:bg-rose-600"
               id="removeFileBtn">
               Remove File
             </button>
           </div>
 
-          <button onclick="submitComplaint()"
+          <button type="submit"
             class="mt-8 rounded-xl bg-sky-500 px-7 py-4 font-black text-white shadow-xl shadow-sky-200 hover:bg-sky-600">
             Submit Complaint
           </button>
+          </form>
 
           <p id="submitResult" class="mt-4 text-lg font-black text-emerald-600"></p>
         </section>

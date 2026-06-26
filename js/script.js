@@ -570,6 +570,15 @@ function submitFeedback() {
 // Load saved user and complaint data when the portal opens.
 window.addEventListener("load", function () {
   if (document.getElementById("portalWelcome")) {
+    const complaintForm = document.getElementById("complaintForm");
+
+    if (complaintForm) {
+      complaintForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        submitComplaint();
+      });
+    }
+
     loadPortalUser();
     renderComplaints();
   }
